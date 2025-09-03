@@ -20,17 +20,17 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public AuthResponseDTO authenticate(AuthDTO authDTO) {
-        User user=userRepository.findByUsername(authDTO.getUsername())
+        User user=userRepository.findByEmail(authDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found!"));
         if (!passwordEncoder.matches(authDTO.getPassword(),user.getPassword())) {
             throw new BadCredentialsException("Incorrect username or password!");
         }
-        String token = jwtUtil.generateToken(authDTO.getUsername());
+        String token = jwtUtil.generateToken(authDTO.getEmail());
         return new AuthResponseDTO(token);
     }
 
     public String register(RegisterDTO registerDTO) {
-        if (userRepository.findByUsername(registerDTO.getFirstName()).isPresent()) {
+        if (userRepository.findByEmail(registerDTO.getEmail()).isPresent()) {
             throw new RuntimeException("Username already exists!");
         }
         User user = User.builder()
