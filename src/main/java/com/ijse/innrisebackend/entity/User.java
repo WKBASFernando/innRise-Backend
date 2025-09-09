@@ -1,5 +1,6 @@
 package com.ijse.innrisebackend.entity;
 
+import com.ijse.innrisebackend.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

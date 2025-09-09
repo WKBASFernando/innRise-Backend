@@ -3,7 +3,7 @@ package com.ijse.innrisebackend.service;
 import com.ijse.innrisebackend.dto.AuthDTO;
 import com.ijse.innrisebackend.dto.RegisterDTO;
 import com.ijse.innrisebackend.dto.AuthResponseDTO;
-import com.ijse.innrisebackend.entity.Role;
+import com.ijse.innrisebackend.enums.Role;
 import com.ijse.innrisebackend.entity.User;
 import com.ijse.innrisebackend.repository.UserRepository;
 import com.ijse.innrisebackend.util.JwtUtil;
