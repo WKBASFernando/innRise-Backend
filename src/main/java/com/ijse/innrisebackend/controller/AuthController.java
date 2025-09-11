@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -36,4 +38,17 @@ public class AuthController {
                 )
         );
     }
+
+    @PostMapping("/google")
+    public ResponseEntity<ApiResponse> googleLogin(@RequestBody Map<String, String> payload) {
+        String googleToken = payload.get("token"); // token from frontend
+        return ResponseEntity.ok(
+                new ApiResponse(
+                        200,
+                        "Google login successful",
+                        authService.authenticateGoogle(googleToken)
+                )
+        );
+    }
 }
+
