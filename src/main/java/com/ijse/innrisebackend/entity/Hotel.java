@@ -16,13 +16,13 @@ public class Hotel {
     private String name;
     private String location;
     private String address;
-    private String contactNumber;
+    private String contact_number;
     private String email;
 
     @Column(length = 2000)
     private String description;
 
-    private int starRating; // 1–5 stars
+    private int star_rating; // 1–5 stars
 
     // --- Relationships ---
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)

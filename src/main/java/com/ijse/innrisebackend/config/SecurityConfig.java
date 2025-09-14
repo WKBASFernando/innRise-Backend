@@ -1,6 +1,5 @@
-package com.ijse.innrisebackend.controller;
+package com.ijse.innrisebackend.config;
 
-import com.ijse.innrisebackend.util.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,32 +12,34 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final UserDetailsService userDetailsService;
-    private final JwtAuthFilter jwtAuthFilter;
     private final PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers("/auth/**").permitAll()
-                                .anyRequest().authenticated())
-                .sessionManagement(
-                        session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http
+                .csrf(AbstractHttpConfigurer::disable) // disable CSRF so Postman POST/PUT works
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll() // open auth endpoints
+                        .requestMatchers("/api/innrise/hotel/**").permitAll() // open hotel endpoints
+                        .anyRequest().authenticated() // other endpoints need auth
                 )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider());
+
         return http.build();
     }
 
-    private AuthenticationProvider authenticationProvider() {
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
